@@ -1,6 +1,5 @@
 import userModel from '../models/User.js'
 export const registerController = async(req, res, next) =>{
-    try {
         const {name, email, phone, password, location} = req.body
         if(!name){
             next("name is required.")
@@ -30,7 +29,5 @@ export const registerController = async(req, res, next) =>{
         })
 
 
-    } catch (error) {
-       next(error)
-    }
+  
 }
