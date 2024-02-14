@@ -7,8 +7,11 @@ import morgan from 'morgan'
 
 //import important files
 import { DBConnection } from './config/db.js'
+import testRoute from './routes/testRoute.js'
 import userRoute from './routes/userRoute.js'
+import jobRoute from './routes/jobRoute.js'
 import { errorMiddleware } from './middleware/errorMiddleware.js'
+import authMiddleware from './middleware/authMiddleware.js'
 
 
 //configure enviroment
@@ -26,7 +29,9 @@ app.use(cors())
 app.use(morgan("dev"))
 
 //routes
+app.use('/api/v1/test',authMiddleware, testRoute)
 app.use('/api/v1/user', userRoute)
+app.use('/api/v1/job', jobRoute)
 
 //Validation Middleware
 app.use(errorMiddleware)

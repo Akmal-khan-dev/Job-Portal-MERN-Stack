@@ -23,11 +23,60 @@ export const registerController = async(req, res, next) =>{
         }
         
         const user = await userModel.create({name,email, phone, password})
+        const token = user.jwtCreate();
         return res.status(200).send({
             success: true,
-            message:"Registeration successful."
+            message:"Registeration successful.",
+            user,
+            token
         })
+}
 
+export const loginController = async(req, res, next) =>{
+    const {email, password} = req.body
+    if(!email || !password){
+        next("All fields are required")
+    }
+ 
+   
+    const user = await userModel.findOne({email}).select("+password")
+    if(!user){
+        next("Invalid email or password");
+    }
+    console.log("password:",password)
+     const isMatch = await user.comparedPassword(password)
+     if(!isMatch){
+        next("Invalid email or password")
+     }
+     
+     const token = user.jwtCreate()
+     user.password = undefined
 
-  
+     return res.status(200).send({
+        success:true,
+        messsage:"Login is successful",
+        token,
+        user
+     })
+}
+
+export const updateController = async(req, res, next) =>{
+    const{name, email, phone, location} = req.body
+    if(!name || !email || !phone){
+        next("All field are required")
+    }
+    const user = await userModel.findOne({_id:req.user.userId})
+    user.name= name
+    user.email = email
+    user.phone = phone
+    user.location = location
+    await user.save()
+    const token= user.jwtCreate()
+    return res.status(200).send({
+        success:true,
+        message:"Account updated successfully",
+        user,
+        token
+    })
+    
 }
