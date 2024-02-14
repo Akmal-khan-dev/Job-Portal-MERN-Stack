@@ -9,7 +9,7 @@ const authMiddleware = async(req, res, next) =>{
     try {
         const payload = JWT.verify(token, process.env.JWT_SECRET)
         req.user = {userId:payload.userId}
-        console.log(req.user)
+        
         next()
     } catch (error) {
         next("Auth failed")
